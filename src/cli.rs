@@ -1,10 +1,12 @@
+use std::process::Output;
+
 use clap::Parser;
 
 pub enum Command {
-    EncodeFile(String),
-    DecodeFile(String),
-    Encode(String),
-    Decode(String),
+    EncodeFile(String, String),
+    DecodeFile(String, String),
+    Encode(String, String),
+    Decode(String, String),
     InvalidCommand,
 }
 
@@ -15,9 +17,13 @@ struct Args {
     #[arg(short, long, default_value = "encode")]
     action: String,
 
-    /// Number of times to greet
+    /// Input
     #[arg(short, long, default_value = "")]
-    file: String,
+    input: String,
+
+    /// Output
+    #[arg(short, long)]
+    output: String,
 
     /// Data
     #[arg(short, long, default_value = "")]
@@ -28,22 +34,23 @@ pub fn get_command() -> Command {
     let args = Args::parse();
     let action = args.action;
     let data = args.data;
-    let file = args.file;
+    let input = args.input;
+    let output = args.output;
 
     if action == "encode" {
         if !data.is_empty() {
-            return Command::Encode(data);
+            return Command::Encode(data, output);
         }
-        if !file.is_empty() {
-            return Command::EncodeFile(file);
+        if !input.is_empty() {
+            return Command::EncodeFile(input, output);
         }
     }
     if action == "decode" {
         if !data.is_empty() {
-            return Command::Decode(data);
+            return Command::Decode(data, output);
         }
-        if !file.is_empty() {
-            return Command::DecodeFile(file);
+        if !input.is_empty() {
+            return Command::DecodeFile(input, output);
         }
     }
 

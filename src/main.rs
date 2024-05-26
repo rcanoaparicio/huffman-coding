@@ -9,44 +9,32 @@ fn read_file_contents(path: &str) -> Vec<u8> {
     data
 }
 
+fn write_contents_to_file(path: &str, contents: &Vec<u8>) {
+    let _ = fs::write(path, contents);
+}
+
 fn main() {
     let command = cli::get_command();
     match command {
-        cli::Command::Encode(contents) => {
+        cli::Command::Encode(contents, output) => {
             let data = contents.as_bytes();
             let encoded_contents = encoder::encode_data(&data.to_vec());
-            let result_string = encoded_contents
-                .iter()
-                .map(|&c| c as char)
-                .collect::<String>();
-            println!("{result_string}");
+            write_contents_to_file(&output, &encoded_contents);
         }
-        cli::Command::EncodeFile(file) => {
+        cli::Command::EncodeFile(file, output) => {
             let data = read_file_contents(&file);
             let encoded_contents = encoder::encode_data(&data.to_vec());
-            let result_string = encoded_contents
-                .iter()
-                .map(|&c| c as char)
-                .collect::<String>();
-            println!("{result_string}");
+            write_contents_to_file(&output, &encoded_contents);
         }
-        cli::Command::Decode(contents) => {
+        cli::Command::Decode(contents, output) => {
             let data = contents.as_bytes();
             let decoded_contents = decoder::decode_data(&data.to_vec());
-            let result_string = decoded_contents
-                .iter()
-                .map(|&c| c as char)
-                .collect::<String>();
-            println!("{result_string}");
+            write_contents_to_file(&output, &decoded_contents);
         }
-        cli::Command::DecodeFile(file) => {
+        cli::Command::DecodeFile(file, output) => {
             let data = read_file_contents(&file);
             let decoded_contents = decoder::decode_data(&data.to_vec());
-            let result_string = decoded_contents
-                .iter()
-                .map(|&c| c as char)
-                .collect::<String>();
-            println!("{result_string}");
+            write_contents_to_file(&output, &decoded_contents);
         }
         _ => panic!("Invalid args"),
     }
